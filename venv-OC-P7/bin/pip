@@ -1,0 +1,10 @@
+#!/bin/sh
+'''exec' "/Users/naxencia/doc/Pro/reconversion pro/Formation/openclassrooms_Formation dev python_Vieillefont Mathieu/Projets formation Python/Projet 7_Résolvez des problèmes en utilisant des algorithmes en Python/taff/OC_P7_Résolvez des problèmes en utilisant des algorithmes en Python/venv-OC-P7/bin/python3.12" "$0" "$@"
+' '''
+# -*- coding: utf-8 -*-
+import re
+import sys
+from pip._internal.cli.main import main
+if __name__ == '__main__':
+    sys.argv[0] = re.sub(r'(-script\.pyw|\.exe)?$', '', sys.argv[0])
+    sys.exit(main())
