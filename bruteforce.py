@@ -3,6 +3,9 @@ import csv
 import time
 from tqdm import tqdm
 
+# calcul du profit
+def calculate_profit (price:float, percentage_profit:float) -> float:
+    return price * percentage_profit / 100
 
 # Ouvrir un fichier CSV d'action et lire son contenu
 def read_actions_csv_file(path:str,field_1:str, field_2:str, field_3:str) -> list[tuple[str,float,float]]:
@@ -14,7 +17,8 @@ def read_actions_csv_file(path:str,field_1:str, field_2:str, field_3:str) -> lis
                 # Utiliser la ligne 'Actions #' comme clé
                 action_name = row[field_1]
                 price = float(row[field_2].replace(",","."))
-                profit = float(row[field_3].replace(",","."))
+                profit_percentage = float(row[field_3].replace(",",".").replace("%",""))
+                profit = calculate_profit(price, profit_percentage)
                 
                 # Ajouter chaque ligne au dictionnaire avec le bénéfice
                 action_dict[action_name] = {

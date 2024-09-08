@@ -3,6 +3,11 @@ import csv
 from tqdm import tqdm
 
 
+
+# calcul du profit
+def calculate_profit (price:float, percentage_profit:float) -> float:
+    return price * percentage_profit
+
 # Ouvrir un fichier CSV d'action et lire son contenu
 def read_actions_csv_file(path:str,field_1:str, field_2:str, field_3:str) -> list[tuple[str,float,float]]:
     action_dict={}
@@ -14,10 +19,11 @@ def read_actions_csv_file(path:str,field_1:str, field_2:str, field_3:str) -> lis
                 # Utiliser la ligne 'Actions #' comme clé
                 action_name = row[field_1]
 
-                # price et profit X100 pour pouvoir les convertir en entier car
+                # price  X100 pour pouvoir les convertir en entier car
                 # ils deviendront des index de la matrice qui doivent etre des entiers
                 price = int(100*float(row[field_2].replace(",",".")))
-                profit = int(100*float(row[field_3].replace(",",".")))
+                percentage_profit = float(row[field_3].replace(",",".").replace("%",""))/100
+                profit = calculate_profit(price, percentage_profit)/100
                 
                 # Ignorer les actions avec un coût négatif ou nul
                 if price <= 0:
@@ -50,12 +56,11 @@ def read_actions_csv_file(path:str,field_1:str, field_2:str, field_3:str) -> lis
 def sacADos_dynamique(capacite, actions):
     #creation de la matrice a deux dimensions initialiser à zero
     matrice = []
-    for n in range(len(actions)+1):
+    for _ in range(len(actions)+1):
         line = []
-        for n in range(capacite +1):
+        for _ in range(capacite +1):
             line.append(0)
         matrice.append(line)
-    
 
     #remplissage de la matrice
     for i in tqdm(range(1, len(actions) + 1)):
@@ -79,13 +84,13 @@ def sacADos_dynamique(capacite, actions):
 
         n -= 1
 
-    profit_max = matrice[-1][-1] / 100
-    # print(profit_max, actions_selection)
+    profit_max = matrice[-1][-1]
     return profit_max, actions_selection
 
+# affichage des resultats
 def display_results(profit_max, actions_selection):
 
-    actions_selection_names =[action[0] for action in actions_selection]
+    actions_selection_names =[(action[0], action[1]/100, round(action[2],2)) for action in actions_selection]
     print("\nLa meilleur combinaison d'achat d'action pour un montant de 500€ generant le maximum de profit sur deux ans est : \n")
     for action in actions_selection_names:
         print(action)
@@ -93,7 +98,23 @@ def display_results(profit_max, actions_selection):
     total_cost = sum(actions[1] for actions in actions_selection) / 100
 
     print(f"\nle cout total est de: {total_cost} €")
-    print(f"\nle profit est de: {profit_max} €")
+    print(f"\nle profit est de: {round(profit_max,2)} €")
+
+# sauvegarde des resultats sous format csv
+def save_selected_actions_to_csv(actions_selection,path):
+    # Ouvrir le fichier CSV en mode écriture
+    filename=f"selected_actions_{path}.csv"
+    with open(filename, mode='w', newline='') as file:
+        writer = csv.writer(file)
+        
+        # Écrire l'en-tête du fichier
+        writer.writerow(["Action Name", "Price", "Profit"])
+        
+        # Parcourir actions_selection et écrire chaque action dans le fichier
+        for action in actions_selection:
+            writer.writerow([action[0], action[1] / 100, round(action[2],2)])  # price est redivisé par 100 pour revenir aux euros
+
+    print(f"Le fichier CSV '{filename}' a été créé avec succès.")
 
 def main():
     # parametrage des champs pour les fichiers d'actions a analyser
@@ -110,6 +131,7 @@ def main():
     actions = read_actions_csv_file(path,field_1, field_2, field_3)
     capacite = 500 * 100
     profit_max, actions_selection = sacADos_dynamique(capacite, actions)
+    save_selected_actions_to_csv(actions_selection,user_input)
     display_results(profit_max, actions_selection)
     end_time = time.time()
     print(f"\ndurée d'execution: {end_time - start_time} s")
