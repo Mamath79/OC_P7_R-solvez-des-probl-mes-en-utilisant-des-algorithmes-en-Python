@@ -124,7 +124,7 @@ def main():
 
     # choix du fichier à analyser par l'utilisateur ( doit etre un csv bien formater present dan sle dossier Action folder)
     user_input = input("entrer le nom du fichier à analyser pour un budget max de 500 €: ")
-    path=f"Action folder/{user_input}.csv"
+    path=f"data/{user_input}.csv"
     
     # choix du budget max à implementer :
     start_time = time.time()
