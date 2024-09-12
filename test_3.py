@@ -19,3 +19,16 @@ print(round(num, 2))
 
 user_input = input("entrer le nom du fichier à analyser pour un budget max de 500 €: ")
 print(user_input)
+
+# Retrouver les éléments en fonction de la somme
+w = capacite
+n = len(actions)
+actions_selection = []
+
+while w >= 0 and n >= 0:
+    e = actions[n-1]
+    if matrice[n][w] == matrice[n-1][w-e[1]] + e[2]:
+        actions_selection.append(e)
+        w -= e[1]
+
+    n -= 1

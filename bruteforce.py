@@ -36,7 +36,7 @@ def read_actions_csv_file(path:str,field_1:str, field_2:str, field_3:str) -> lis
     return actions
 
 # creation d'une liste de combinaisons possible d'achat d'action pour un cout total ne depassant pas les 500€
-def generate_valid_combinations(actions:list[tuple[str,float,float]],budget_max:int):
+def generate_valid_combinations(actions:list[tuple[str,float,float]], budget_max:int):
     valid_combinations = []
     for n in tqdm(range( 1, len(actions)+1)):
         for combination in itertools.combinations(actions, n):
@@ -57,7 +57,7 @@ def generate_valid_combinations(actions:list[tuple[str,float,float]],budget_max:
     return valid_combinations, total_combinations, sorted_combinations, top_1_combination
 
 
-def display_results(total_combinations, top_1_combination):
+def display_results(total_combinations:int, top_1_combination:list[tuple[str,float,float]]):
     # Affichage nombre de combinaison et de la meilleur combinaison
     print(f"\nle nombre de combinaisons possibles est de : {total_combinations} ")
     top_1_combinations_names =[action[0] for action in top_1_combination[0]]
@@ -89,5 +89,5 @@ def main():
     end_time = time.time()
     print(f"\ndurée d'execution: {end_time - start_time} s")
 
-if __name__ =="__main__":
+if __name__ == "__main__":
     main()

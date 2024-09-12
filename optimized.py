@@ -53,7 +53,7 @@ def read_actions_csv_file(path:str,field_1:str, field_2:str, field_3:str) -> lis
     return actions
 
 # Solution optimale - programmation dynamique
-def sacADos_dynamique(capacite, actions):
+def knapsack_dynamic(capacite, actions):
     #creation de la matrice a deux dimensions initialiser à zero
     matrice = []
     for _ in range(len(actions)+1):
@@ -66,7 +66,8 @@ def sacADos_dynamique(capacite, actions):
     for i in tqdm(range(1, len(actions) + 1)):
         for w in range(1, capacite + 1):
             if actions[i-1][1] <= w:
-                matrice[i][w] = max(actions[i-1][2] + matrice[i-1][w-actions[i-1][1]], matrice[i-1][w])
+                matrice[i][w] = max(actions[i-1][2] +
+                                    matrice[i-1][w-actions[i-1][1]], matrice[i-1][w])
             else:
                 matrice[i][w] = matrice[i-1][w]
 
@@ -130,7 +131,7 @@ def main():
     start_time = time.time()
     actions = read_actions_csv_file(path,field_1, field_2, field_3)
     capacite = 500 * 100
-    profit_max, actions_selection = sacADos_dynamique(capacite, actions)
+    profit_max, actions_selection = knapsack_dynamic(capacite, actions)
     save_selected_actions_to_csv(actions_selection,user_input)
     display_results(profit_max, actions_selection)
     end_time = time.time()
